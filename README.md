@@ -15,6 +15,10 @@ A Kubernetes-native platform for provisioning isolated e-commerce stores (WooCom
 - **Frontend:** React (Vite, Tailwind).
 - **Infrastructure:** Helm Charts (Universal Store Chart using Bitnami WordPress/MariaDB).
 
+## System architecture
+<img width="2816" height="1536" alt="System Architecture" src="https://github.com/user-attachments/assets/be1a9566-5263-4b5a-ac5f-ce1b46419246" />
+
+
 ## Prerequisites
 
 - Node.js v18+ (tested on v18.19.1)
