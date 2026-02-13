@@ -1,0 +1,38 @@
+wordpress:
+  enabled: true
+  wordpressEmail: user@example.com
+  wordpressPlugins: "woocommerce"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
+  mariadb:
+    auth:
+      # Passwords must be set via --set or secrets
+      rootPassword: ""
+      password: ""
+    primary:
+      persistence:
+        enabled: true
+        size: 10Gi
+        # storageClass: "longhorn" # Example for prod
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 1Gi
+        requests:
+          cpu: 500m
+          memory: 512Mi
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: true
+    # hostname: will be set dynamically via --set
+    path: /
+    pathType: Prefix
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      # cert-manager.io/cluster-issuer: letsencrypt-prod

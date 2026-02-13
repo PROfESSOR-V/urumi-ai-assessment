@@ -1,0 +1,31 @@
+wordpress:
+  enabled: true
+  wordpressEmail: user@example.com
+  wordpressPlugins: "woocommerce"
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 300m
+      memory: 256Mi
+  mariadb:
+    auth:
+      # Passwords must be set via --set or secrets
+      rootPassword: ""
+      password: ""
+    primary:
+      persistence:
+        enabled: true
+        size: 1Gi
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 300m
+          memory: 256Mi
+  service:
+    type: ClusterIP
+  ingress:
+    enabled: false
