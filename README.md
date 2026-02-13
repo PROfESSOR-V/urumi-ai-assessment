@@ -11,13 +11,36 @@ A Kubernetes-native platform for provisioning isolated e-commerce stores (WooCom
 
 ## Architecture
 
+See [SystemDesign.md](./SystemDesign.md) for detailed design decisions and tradeoffs.
+
+```mermaid
+graph TD
+    User[User] -->|Access Dashboard| Frontend[React Dashboard]
+    Frontend -->|API Requests| Backend[Node.js Control Plane]
+
+    subgraph "Kubernetes Cluster"
+        Backend -->|K8s API / Helm| K8sApi[K8s API Server]
+
+        subgraph "Namespace: store-shop1"
+            Pod1[WordPress+WooCommerce Pod]
+            PodDb1[MariaDB Pod]
+            Svc1[Service]
+            Ing1[Ingress]
+        end
+
+        IngressController[Ingress Controller] -->|Routes Domain| Ing1
+    end
+
+    Backend -->|Persists State| DB[(SQLite/Postgres)]
+```
+
 - **Backend:** Node.js (Express, Sequelize, @kubernetes/client-node).
 - **Frontend:** React (Vite, Tailwind).
 - **Infrastructure:** Helm Charts (Universal Store Chart using Bitnami WordPress/MariaDB).
 
-## System architecture
-<img width="2816" height="1536" alt="System Architecture" src="https://github.com/user-attachments/assets/be1a9566-5263-4b5a-ac5f-ce1b46419246" />
+## System Design Daigram
 
+![alt text](<System Architecture.png>)
 
 ## Prerequisites
 
@@ -70,6 +93,26 @@ npm run dev
 5. Access store at `http://shop1.localhost:8081`.
    - **Note:** Ensure you have `.localhost` domains mapping to `127.0.0.1` in your `/etc/hosts` if your system doesn't do this automatically.
    - **Note:** The "Visit" button relies on the port-forward (8081) running.
+
+### 5. Place an Order
+
+1.  **Access Admin Panel**:
+    - Go to `http://shop1.localhost:8081/wp-admin` (replace `shop1` with your subdomain).
+    - Login with verified credentials (default: `user` / `bitnami`).
+2.  **Add a Product**:
+    - Navigate to **Products > Add New**.
+    - Enter a name (e.g., "T-Shirt"), set a price (e.g., "$20"), and click **Publish**.
+3.  **Visit Store**:
+    - Go to `http://shop1.localhost:8081`.
+    - You should see your new product.
+4.  **Checkout**:
+    - Add product to cart.
+    - Proceed to checkout.
+    - Fill in details. Note: You may need to enable "Cash on Delivery" or "Check Payments" in **WooCommerce > Settings > Payments** if not already enabled.
+    - Click **Place Order**.
+5.  **Verify**:
+    - Go back to `/wp-admin` > **WooCommerce > Orders**.
+    - You should see the new order.
 
 ## Production Deployment (VPS/k3s)
 
